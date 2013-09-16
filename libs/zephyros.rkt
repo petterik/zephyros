@@ -1,8 +1,7 @@
 #lang racket
 
 (require json
-         racket/future
-         racket/place)
+         racket/future)
 
 (require (planet shawnpresser/racket-unix-sockets:1:0))
 
@@ -52,36 +51,26 @@
                     message)
                    args)))
 
-(define (read-message)
-  '*)
-
 ;; routines that just return values and don't change
 ;; state
 (define (clipboard-contents)
-  (send-message "clipboard_contents")
-  (read-message))
+  (send-message "clipboard_contents"))
 
 (define (focused-window)
-  (send-message "focused_window")
-  (read-message))
+  (send-message "focused_window"))
 
 (define (visible-windows)
-  (send-message "visible_windows")
-  (read-message))
+  (send-message "visible_windows"))
 
 (define (all-windows)
-  (send-message "all_windows")
-  (read-message))
+  (send-message "all_windows"))
 
 (define (main-screen)
-  (send-message "main_screen")
-  (read-message))
+  (send-message "main_screen"))
 
 (define (all-screens)
-  (send-message "all_screens")
-  (read-message))
+  (send-message "all_screens"))
 
 (define (running-apps)
-  (send-message "running_apps")
-  (read-message))
+  (send-message "running_apps"))
 
