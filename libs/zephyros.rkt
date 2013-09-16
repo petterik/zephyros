@@ -19,6 +19,8 @@
   (i o)
   (unix-socket-connect "/tmp/zephyros.sock"))
 
+(define received-messages (make-hash))
+
 (define next-msg-id 0)
 
 (define (get-next-msg-id)
@@ -27,17 +29,20 @@
     to-return))
 
 (define (send-message message)
-  (displayln (message-str->json-str message) o)
-  (flush-output o))
+  (define (read-till-recv id)
+    (if (hash-has-key? received-messages id)
+        (hash-ref received-messages id)
+        (read-till-recv id)))
+  (thread (lambda ()
+            (displayln (message-str->json-str message) o)
+            (flush-output o))))
 
 (define (reader)
   (define (loop)
-    (print (read-message))
-    (loop))
-  (loop))
-
-(define (read-message)
-  (second (read-json i)))
+   (define-values (id msg+) (apply values (read-json i)))
+   (hash-set! received-messages id msg+)
+   (loop))
+  (thread (lambda () (loop))))
 
 (define (message-str->json-str message [args '()])
   (jsexpr->string (append
@@ -46,6 +51,9 @@
                     0
                     message)
                    args)))
+
+(define (read-message)
+  '*)
 
 ;; routines that just return values and don't change
 ;; state
@@ -76,3 +84,4 @@
 (define (running-apps)
   (send-message "running_apps")
   (read-message))
+
