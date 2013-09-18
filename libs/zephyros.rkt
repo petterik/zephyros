@@ -27,19 +27,22 @@
     (set! next-msg-id (+ next-msg-id 1))
     to-return))
 
-(define (send-message message)
+(define (send-message-no-response message [args '()])
+  (let* ((payload (message-payload message args))
+         (msg-id  (first payload)))
+    (thread (lambda ()
+              (displayln (jsexpr->string payload) o)
+              (flush-output o)))
+    msg-id))
+
+(define (send-message message [args '()])
   (define (read-till-recv id)
     (if (hash-has-key? received-messages id)
         (hash-ref received-messages id)
         (read-till-recv id)))
   
-  (let* ((payload (message-payload message))
-         (msg-id  (first payload)))
-    (thread (lambda ()
-              (displayln (jsexpr->string payload) o)
-              (flush-output o)))
-    
-    (read-till-recv msg-id)))
+  (read-till-recv
+   (send-message-no-response message args)))
 
 (define (reader)
   (define (loop)
@@ -76,5 +79,39 @@
 
 (define (running-apps)
   (send-message "running_apps"))
+
+;; top level routines that perform
+;; an action (not window / screen / app related)
+(define (alert msg duration)
+  (send-message-no-response
+   "alert" (list msg duration)))
+
+(define (log msg)
+  (send-message-no-response
+   "log" (list msg)))
+
+(define (show-box msg)
+  (send-message-no-response
+   "show_box" (list msg)))
+
+(define (hide-box)
+  (send-message-no-response
+   "hide_box"))
+
+(define (choose-from lst title lines_tall chars_wide)
+  (send-message
+   "choose_from"
+   (list lst title lines_tall chars_wide)))
+
+(define (update-settings k-v)
+  (send-message-no-response
+   "update_settings"
+   (list k-v)))
+
+(define (undo)
+  (send-message "undo"))
+
+(define (redo)
+  (send-message "redo"))
 
 (reader)
