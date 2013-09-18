@@ -77,3 +77,4 @@
 (define (running-apps)
   (send-message "running_apps"))
 
+(reader)
