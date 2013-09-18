@@ -32,9 +32,14 @@
     (if (hash-has-key? received-messages id)
         (hash-ref received-messages id)
         (read-till-recv id)))
-  (thread (lambda ()
-            (displayln (message-str->json-str message) o)
-            (flush-output o))))
+  
+  (let* ((payload (message-payload message))
+         (msg-id  (first payload)))
+    (thread (lambda ()
+              (displayln (jsexpr->string payload) o)
+              (flush-output o)))
+    
+    (read-till-recv msg-id)))
 
 (define (reader)
   (define (loop)
@@ -43,13 +48,11 @@
    (loop))
   (thread (lambda () (loop))))
 
-(define (message-str->json-str message [args '()])
-  (jsexpr->string (append
-                   (list
-                    (get-next-msg-id)
-                    0
-                    message)
-                   args)))
+(define (message-payload message [args '()])
+  (append
+   (list
+    (get-next-msg-id) 0 message)
+     args))
 
 ;; routines that just return values and don't change
 ;; state
