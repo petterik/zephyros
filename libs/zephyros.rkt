@@ -116,8 +116,88 @@
 (define (redo)
   (send-message "redo"))
 
-
 ;; window infra
-(struct window (x y w h title))
+(define (send-window-message message window-id [args '()])
+  (visible-windows)
+  (send-message message window-id args))
+
+(define (send-window-message-no-response message window-id [args '()])
+  (visible-windows)
+  (send-message-no-response message window-id args))
+
+(define (window-title window-id)
+  (send-window-message "title" window-id))
+
+(define (window-set-frame window-id x y w h)
+  (send-window-message-no-response "set_frame" window-id (list x y w h)))
+
+(define (window-set-top-left window-id x y)
+  (send-window-message-no-response "set_top_left" window-id (list x y)))
+
+(define (window-set-size window-id w h)
+  (send-window-message-no-response "set_size" window-id (list w h)))
+
+(define (window-frame window-id)
+  (send-window-message "frame" window-id))
+
+(define (window-top-left window-id)
+  (send-window-message "top_left" window-id))
+
+(define (window-size window-id)
+  (send-window-message "size" window-id))
+
+(define (window-maximize window-id)
+  (send-window-message-no-response "maximize" window-id))
+
+(define (window-minimize window-id)
+  (send-window-message-no-response "minimize" window-id))
+
+(define (window-un-minimize window-id)
+  (send-window-message-no-response "un_minimize" window-id))
+
+(define (window-app window-id)
+  (send-window-message "app_id" window-id))
+
+(define (window-screen window-id)
+  (send-window-message "screen_id" window-id))
+
+(define (window-focus? window-id)
+  (send-window-message "focus_window" window-id))
+
+(define (window-focus-left window-id)
+  (send-window-message-no-response "focus_window_left" window-id))
+
+(define (window-focus-right window-id)
+  (send-window-message-no-response "focus_window_right" window-id))
+
+(define (window-focus-up window-id)
+  (send-window-message-no-response "focus_window_up" window-id))
+
+(define (window-focus-down window-id)
+  (send-window-message-no-response "focus_window_down" window-id))
+
+(define (windows-to-north window-id)
+  (send-window-message "windows_to_north" window-id))
+
+(define (windows-to-south window-id)
+  (send-window-message "windows_to_south" window-id))
+
+(define (windows-to-east window-id)
+  (send-window-message "windows_to_east" window-id))
+
+(define (windows-to-west window-id)
+  (send-window-message "windows_to_west" window-id))
+
+(define (normal-window? window-id)
+  (send-window-message "normal_window?" window-id))
+
+(define (minimized? window-id)
+  (send-window-message "minimized?" window-id))
+
+(define (other-windows-on-same-screen window-id)
+  (send-window-message "other_windows_on_same_screen" window-id))
+
+(define (other-windows-on-all-screens window-id)
+  (send-window-message "other_windows_on_all_screens" window-id))
 
 (reader)
