@@ -18,6 +18,8 @@
   (i o)
   (unix-socket-connect "/tmp/zephyros.sock"))
 
+
+;; message infrastructure
 (define received-messages (make-hash))
 
 (define next-msg-id 0)
@@ -27,22 +29,22 @@
     (set! next-msg-id (+ next-msg-id 1))
     to-return))
 
-(define (send-message-no-response message [args '()])
-  (let* ((payload (message-payload message args))
+(define (send-message-no-response message [receiver 'null] [args '()])
+  (let* ((payload (message-payload message receiver args))
          (msg-id  (first payload)))
     (thread (lambda ()
               (displayln (jsexpr->string payload) o)
               (flush-output o)))
     msg-id))
 
-(define (send-message message [args '()])
+(define (send-message message [receiver 'null] [args '()])
   (define (read-till-recv id)
     (if (hash-has-key? received-messages id)
         (hash-ref received-messages id)
         (read-till-recv id)))
   
   (read-till-recv
-   (send-message-no-response message args)))
+   (send-message-no-response message receiver args)))
 
 (define (reader)
   (define (loop)
@@ -51,10 +53,10 @@
    (loop))
   (thread (lambda () (loop))))
 
-(define (message-payload message [args '()])
+(define (message-payload message [receiver 'null] [args '()])
   (append
    (list
-    (get-next-msg-id) 0 message)
+    (get-next-msg-id) receiver message)
      args))
 
 ;; routines that just return values and don't change
@@ -113,5 +115,9 @@
 
 (define (redo)
   (send-message "redo"))
+
+
+;; window infra
+(struct window (x y w h title))
 
 (reader)
