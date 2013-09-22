@@ -21,13 +21,15 @@
 
 ;; message infrastructure
 (define received-messages (make-hash))
-
 (define next-msg-id 0)
+(define msg-id-sema (make-semaphore 1))
 
 (define (get-next-msg-id)
-  (let ((to-return next-msg-id))
-    (set! next-msg-id (+ next-msg-id 1))
-    to-return))
+  (semaphore-wait msg-id-sema)
+  (define to-return next-msg-id)
+  (set! next-msg-id (+ next-msg-id 1))
+  (semaphore-post msg-id-sema)
+  to-return)
 
 (define (send-message-no-response message [receiver 'null] [args '()])
   (let* ((payload (message-payload message receiver args))
