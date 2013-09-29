@@ -5,6 +5,8 @@
 
 (require (planet shawnpresser/racket-unix-sockets:1:0))
 
+(require (for-syntax racket/string))
+
 (provide clipboard-contents
          focused-window
          visible-windows
@@ -12,7 +14,6 @@
          main-screen
          all-screens
          running-apps)
-
 
 (define-values
   (i o)
@@ -61,145 +62,142 @@
     (get-next-msg-id) receiver message)
      args))
 
-;; routines that just return values and don't change
-;; state
-(define (clipboard-contents)
-  (send-message "clipboard_contents"))
+(define-for-syntax (get-fn-name str)
+  (string->symbol
+   (string-replace str "_" "-")))
 
-(define (focused-window)
-  (send-message "focused_window"))
+(define-syntax (protocol->response-function stx)
+  (syntax-case stx ()
+    ;; no args and no receiver routines
+    [(_ str)
+     (with-syntax ([fn-name (datum->syntax
+                             stx
+                             (get-fn-name (syntax->datum #'str)))])
+       
+       #'(define (fn-name)
+           (send-message str)))]
 
-(define (visible-windows)
-  (send-message "visible_windows"))
+    ;; no receiver but routine has args
+    [(_ str (args ...))
+     (with-syntax ([fn-name (datum->syntax
+                             stx
+                             (get-fn-name (syntax->datum #'str)))])
+       #'(define (fn-name args ...)
+           (send-message str 'null (list args ...))))]
 
-(define (all-windows)
-  (send-message "all_windows"))
+    ;; receiver and args exist
+    [(_ str receiver (args ...))
+     (with-syntax ([fn-name (datum->syntax
+                             stx
+                             (get-fn-name (syntax->datum #'str)))])
+       #'(define (fn-name receiver args ...)
+           (send-message str receiver (list args ...))))]))
 
-(define (main-screen)
-  (send-message "main_screen"))
+(define-syntax (protocol->no-response-function stx)
+  (syntax-case stx ()
+    ;; no args and no receiver routines
+    [(_ str)
+     (with-syntax ([fn-name (datum->syntax
+                             stx
+                             (get-fn-name (syntax->datum #'str)))])
+       
+       #'(define (fn-name)
+           (send-message-no-response str)))]
+    
+    ;; no receiver but routine has args
+    [(_ str (args ...))
+     (with-syntax ([fn-name (datum->syntax
+                             stx
+                             (get-fn-name (syntax->datum #'str)))])
+       #'(define (fn-name args ...)
+           (send-message-no-response str 'null (list args ...))))]
 
-(define (all-screens)
-  (send-message "all_screens"))
+    ;; receiver and args exist
+    [(_ str receiver (args ...))
+     (with-syntax ([fn-name (datum->syntax
+                             stx
+                             (get-fn-name (syntax->datum #'str)))])
+       #'(define (fn-name receiver args ...)
+           (send-message-no-response str receiver (list args ...))))]))
 
-(define (running-apps)
-  (send-message "running_apps"))
+;; top level routines that do not modify state
+(protocol->response-function "clipboard_contents")
+(protocol->response-function "focused_window")
+(protocol->response-function "visible_windows")
+(protocol->response-function "all_windows")
+(protocol->response-function "main_screen")
+(protocol->response-function "all_screens")
+(protocol->response-function "running_apps")
+(protocol->response-function "choose_from" (lst title lines-tall chars-wide))
 
 ;; top level routines that perform
 ;; an action (not window / screen / app related)
-(define (alert msg duration)
-  (send-message-no-response
-   "alert" (list msg duration)))
+(protocol->no-response-function "alert" (msg duration))
+(protocol->no-response-function "log" (msg))
+(protocol->no-response-function "show_box" (msg))
+(protocol->no-response-function "hide_box" ())
+(protocol->no-response-function "update_settings" (k-v))
+(protocol->no-response-function "undo")
+(protocol->no-response-function "redo")
 
-(define (log msg)
-  (send-message-no-response
-   "log" (list msg)))
+;; window routines all take a window id and args
 
-(define (show-box msg)
-  (send-message-no-response
-   "show_box" (list msg)))
+;; window routines that return something
+(protocol->response-function "title" window-id ())
+(protocol->response-function "frame" window-id ())
+(protocol->response-function "top_left" window-id ())
+(protocol->response-function "size" window-id ())
+(protocol->response-function "app" window-id ())
+(protocol->response-function "screen_id" window-id ())
+(protocol->response-function "focus_window" window-id ())
+(protocol->response-function "windows_to_north" window-id ())
+(protocol->response-function "windows_to_south" window-id ())
+(protocol->response-function "windows_to_east" window-id ())
+(protocol->response-function "windows_to_west" window-id ())
+(protocol->response-function "normal_window?" window-id ())
+(protocol->response-function "minimized?" window-id ())
+(protocol->response-function "other_windows_on_same_screen" window-id ())
+(protocol->response-function "other_windows_on_all_screens" window-id ())
 
-(define (hide-box)
-  (send-message-no-response
-   "hide_box"))
+;; window routines that manipulate state
+(protocol->no-response-function "set_frame" window-id (x y w h))
+(protocol->no-response-function "set_top_left" window-id (x y))
+(protocol->no-response-function "set_size" window-id (w h))
+(protocol->no-response-function "maximize" window-id ())
+(protocol->no-response-function "minimize" window-id ())
+(protocol->no-response-function "un_minimize" window-id ())
+(protocol->no-response-function "focus_window_left" window-id ())
+(protocol->no-response-function "focus_window_right" window-id ())
+(protocol->no-response-function "focus_window_up" window-id ())
+(protocol->no-response-function "focus_window_down" window-id ())
 
-(define (choose-from lst title lines_tall chars_wide)
-  (send-message
-   "choose_from"
-   (list lst title lines_tall chars_wide)))
+;; All apps take an app-id
+(protocol->response-function "hidden?" app-id ())
 
-(define (update-settings k-v)
-  (send-message-no-response
-   "update_settings"
-   (list k-v)))
+(protocol->no-response-function "show" app-id ())
+(protocol->no-response-function "hide" app-id ())
+(protocol->no-response-function "kill" app-id ())
+(protocol->no-response-function "kill9" app-id ())
 
-(define (undo)
-  (send-message "undo"))
+;; Screen routines
+(protocol->response-function "frame_including_dock_and_menu" screen-id ())
+(protocol->response-function "frame_without_dock_or_menu" screen-id ())
+(protocol->response-function "previous_screen" screen-id ())
+(protocol->response-function "next_screen" screen-id ())
 
-(define (redo)
-  (send-message "redo"))
+(protocol->no-response-function "rotate_to" screen-id (degree))
 
-;; window infra
-(define (send-window-message message window-id [args '()])
-  (visible-windows)
-  (send-message message window-id args))
+;; App routines that clash with the top level routines
+(define (app/visible-windows app-id)
+  (send-message "visible_windows" app-id))
 
-(define (send-window-message-no-response message window-id [args '()])
-  (visible-windows)
-  (send-message-no-response message window-id args))
+(define (app/all-windows app-id)
+  (send-message "all_windows" app-id))
 
-(define (window-title window-id)
-  (send-window-message "title" window-id))
+(define (app/title app-id)
+  (send-message "title" app-id))
 
-(define (window-set-frame window-id x y w h)
-  (send-window-message-no-response "set_frame" window-id (list x y w h)))
-
-(define (window-set-top-left window-id x y)
-  (send-window-message-no-response "set_top_left" window-id (list x y)))
-
-(define (window-set-size window-id w h)
-  (send-window-message-no-response "set_size" window-id (list w h)))
-
-(define (window-frame window-id)
-  (send-window-message "frame" window-id))
-
-(define (window-top-left window-id)
-  (send-window-message "top_left" window-id))
-
-(define (window-size window-id)
-  (send-window-message "size" window-id))
-
-(define (window-maximize window-id)
-  (send-window-message-no-response "maximize" window-id))
-
-(define (window-minimize window-id)
-  (send-window-message-no-response "minimize" window-id))
-
-(define (window-un-minimize window-id)
-  (send-window-message-no-response "un_minimize" window-id))
-
-(define (window-app window-id)
-  (send-window-message "app_id" window-id))
-
-(define (window-screen window-id)
-  (send-window-message "screen_id" window-id))
-
-(define (window-focus? window-id)
-  (send-window-message "focus_window" window-id))
-
-(define (window-focus-left window-id)
-  (send-window-message-no-response "focus_window_left" window-id))
-
-(define (window-focus-right window-id)
-  (send-window-message-no-response "focus_window_right" window-id))
-
-(define (window-focus-up window-id)
-  (send-window-message-no-response "focus_window_up" window-id))
-
-(define (window-focus-down window-id)
-  (send-window-message-no-response "focus_window_down" window-id))
-
-(define (windows-to-north window-id)
-  (send-window-message "windows_to_north" window-id))
-
-(define (windows-to-south window-id)
-  (send-window-message "windows_to_south" window-id))
-
-(define (windows-to-east window-id)
-  (send-window-message "windows_to_east" window-id))
-
-(define (windows-to-west window-id)
-  (send-window-message "windows_to_west" window-id))
-
-(define (normal-window? window-id)
-  (send-window-message "normal_window?" window-id))
-
-(define (minimized? window-id)
-  (send-window-message "minimized?" window-id))
-
-(define (other-windows-on-same-screen window-id)
-  (send-window-message "other_windows_on_same_screen" window-id))
-
-(define (other-windows-on-all-screens window-id)
-  (send-window-message "other_windows_on_all_screens" window-id))
+(define (app/hidden? app-id)
+  (send-message "hidden?" app-id))
 
 (reader)
