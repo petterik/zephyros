@@ -7,14 +7,6 @@
 
 (require (for-syntax racket/string))
 
-(provide clipboard-contents
-         focused-window
-         visible-windows
-         all-windows
-         main-screen
-         all-screens
-         running-apps)
-
 (define-values
   (i o)
   (unix-socket-connect "/tmp/zephyros.sock"))
@@ -199,5 +191,7 @@
 
 (define (app/hidden? app-id)
   (send-message "hidden?" app-id))
+
+(provide (all-defined-out))
 
 (reader)
