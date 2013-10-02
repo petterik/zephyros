@@ -58,6 +58,12 @@
   (string->symbol
    (string-replace str "_" "-")))
 
+(define-for-syntax (get-listener-name str)
+  (string->symbol
+   (format
+    "on-~a"
+    (string-replace str "_" "-"))))
+
 (define-syntax (protocol->response-function stx)
   (syntax-case stx ()
     ;; no args and no receiver routines
@@ -111,6 +117,32 @@
                              (get-fn-name (syntax->datum #'str)))])
        #'(define (fn-name receiver args ...)
            (send-message-no-response str receiver (list args ...))))]))
+
+(define (poll-for-message msg-id f)
+  (define last-value '*)
+  (define (inner)
+    (when (and (hash-has-key? received-messages msg-id)
+               (not (equal? last-value
+                            (hash-ref received-messages msg-id))))
+      (set! last-value (hash-ref received-messages msg-id))
+      (f last-value))
+    (sleep 0.5)
+    (inner))
+  (inner))
+
+;; listen to an event.
+;; transforms window_moved -> (on-window-moved f)
+(define-syntax (protocol->event-listener stx)
+  (syntax-case stx ()
+    [(_ str)
+     (with-syntax ([fn-name (datum->syntax
+                             stx (get-listener-name
+                                  (syntax->datum #'str)))])
+       #'(define (fn-name f)
+           (define msg-id (send-message-no-response "listen" 'null '(str)))
+           (thread
+            (lambda ()
+              (poll-for-message msg-id f)))))]))
 
 ;; top level routines that do not modify state
 (protocol->response-function "clipboard_contents")
@@ -191,6 +223,21 @@
 
 (define (app/hidden? app-id)
   (send-message "hidden?" app-id))
+
+;; listen to events
+(protocol->event-listener "window_created")
+(protocol->event-listener "window_minimized")
+(protocol->event-listener "window_unminiized")
+(protocol->event-listener "window_moved")
+(protocol->event-listener "window_resized")
+(protocol->event-listener "app_launched")
+(protocol->event-listener "focus_changed")
+(protocol->event-listener "app_died")
+(protocol->event-listener "app_hidden")
+(protocol->event-listener "app_shown")
+(protocol->event-listener "screens_changed")
+(protocol->event-listener "mouse_moved")
+(protocol->event-listener "modifiers_changed")
 
 (provide (all-defined-out))
 
