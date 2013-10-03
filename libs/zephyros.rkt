@@ -16,6 +16,7 @@
 (define received-messages (make-hash))
 (define next-msg-id 0)
 (define msg-id-sema (make-semaphore 1))
+(define listeners (make-hash))
 
 (define (get-next-msg-id)
   (semaphore-wait msg-id-sema)
@@ -62,6 +63,12 @@
   (string->symbol
    (format
     "on-~a"
+    (string-replace str "_" "-"))))
+
+(define-for-syntax (get-unlistener-name str)
+  (string->symbol
+   (format
+    "unlisten-~a"
     (string-replace str "_" "-"))))
 
 (define-syntax (protocol->response-function stx)
@@ -126,7 +133,7 @@
                             (hash-ref received-messages msg-id))))
       (set! last-value (hash-ref received-messages msg-id))
       (f last-value))
-    (sleep 0.5)
+    (sleep 0.2)
     (inner))
   (inner))
 
@@ -140,9 +147,21 @@
                                   (syntax->datum #'str)))])
        #'(define (fn-name f)
            (define msg-id (send-message-no-response "listen" 'null '(str)))
-           (thread
-            (lambda ()
-              (poll-for-message msg-id f)))))]))
+           (hash-set! listeners
+                      str
+                      (thread
+                       (lambda ()
+                         (poll-for-message msg-id f))))))]))
+
+(define-syntax (protocol->unlisten stx)
+  (syntax-case stx ()
+    [(_ str)
+     (with-syntax ([fn-name (datum->syntax
+                             stx (get-unlistener-name
+                                  (syntax->datum #'str)))])
+       #'(define (fn-name)
+           (kill-thread
+            (hash-ref listeners str))))]))
 
 ;; top level routines that do not modify state
 (protocol->response-function "clipboard_contents")
@@ -238,6 +257,21 @@
 (protocol->event-listener "screens_changed")
 (protocol->event-listener "mouse_moved")
 (protocol->event-listener "modifiers_changed")
+
+(protocol->unlisten "window_created")
+(protocol->unlisten "window_minimized")
+(protocol->unlisten "window_unminiized")
+(protocol->unlisten "window_moved")
+(protocol->unlisten "window_resized")
+(protocol->unlisten "app_launched")
+(protocol->unlisten "focus_changed")
+(protocol->unlisten "app_died")
+(protocol->unlisten "app_hidden")
+(protocol->unlisten "app_shown")
+(protocol->unlisten "screens_changed")
+(protocol->unlisten "mouse_moved")
+(protocol->unlisten "modifiers_changed")
+
 
 (provide (all-defined-out))
 
