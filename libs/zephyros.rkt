@@ -160,6 +160,7 @@
                              stx (get-unlistener-name
                                   (syntax->datum #'str)))])
        #'(define (fn-name)
+           (send-message-no-response "unlisten" 'null '(str))
            (kill-thread
             (hash-ref listeners str))))]))
 
@@ -271,7 +272,6 @@
 (protocol->unlisten "screens_changed")
 (protocol->unlisten "mouse_moved")
 (protocol->unlisten "modifiers_changed")
-
 
 (provide (all-defined-out))
 
