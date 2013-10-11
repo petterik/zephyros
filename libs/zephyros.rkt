@@ -204,9 +204,9 @@
 (protocol->response-function "other_windows_on_all_screens" window-id ())
 
 ;; window routines that manipulate state
-(protocol->no-response-function "set_frame" window-id (x y w h))
-(protocol->no-response-function "set_top_left" window-id (x y))
-(protocol->no-response-function "set_size" window-id (w h))
+(protocol->no-response-function "set_frame" window-id (dim-hash))
+(protocol->no-response-function "set_top_left" window-id (x-y-hash))
+(protocol->no-response-function "set_size" window-id (w-h-hash))
 (protocol->no-response-function "maximize" window-id ())
 (protocol->no-response-function "minimize" window-id ())
 (protocol->no-response-function "un_minimize" window-id ())
