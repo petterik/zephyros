@@ -13,7 +13,7 @@
 
 *The OS X window manager for hackers*
 
-* Current version: **5.1.1**
+* Current version: **5.2**
 * Requires: OS X 10.7 and up
 * Download: get [.zip file](https://raw.github.com/sdegutis/zephyros/master/Builds/Zephyros-LATEST.app.tar.gz), unzip, right-click app, choose "Open"
 
@@ -45,7 +45,7 @@ You typically write a script that binds global hot keys to do stuff, like moving
 - [Using Go](Docs/Go.md)
 - [Using JavaScript](Docs/JavaScript.md)
 - [Using CoffeeScript](Docs/CoffeeScript.md)
-- [Using Node.js](https://github.com/danielepolencic/zephyros)
+- [Using Node.js](https://github.com/danielepolencic/node-zephyros)
 - [Using CHICKEN Scheme](Docs/Scheme.md)
 
 **Note:** all the languages use the same simple [underlying protocol](Docs/Protocol.md).

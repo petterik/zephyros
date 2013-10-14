@@ -47,10 +47,10 @@ end
 
 Name               | Args                                    | Return value
 -------------------|-----------------------------------------|--------------------
-bind               | key, [modifier, ...]  *(see note 1)*    | nil, followed by: callback, ...
-unbind             | key, [modifier, ...]  *(see note 1)*    |
-listen             | event_name            *(see note 2)*    | nil, followed by: callback, ...
-unlisten           | event_name            *(see note 2)*    | nil
+bind               | key, [modifier, ...]  *[(see note 1)](#note-1-key-strings-and-modifiers)*    | nil, followed by: callback, ...
+unbind             | key, [modifier, ...]  *[(see note 1)](#note-1-key-strings-and-modifiers)*    |
+listen             | event_name            *[(see note 2)](#note-2-event-names)*    | nil, followed by: callback, ...
+unlisten           | event_name            *[(see note 2)](#note-2-event-names)*    | nil
 relaunch_config    |                                         |
 clipboard_contents |                                         | string
 focused_window     |                                         | [window_id](#window)
@@ -64,7 +64,7 @@ log                | msg                                     |
 show_box           | msg                                     |
 hide_box           |                                         |
 choose_from        | list, title, lines_tall, chars_wide     | 0, followed by: chosen index or nil if canceled
-update_settings    | map of strings to values *(see note 3)* |
+update_settings    | map of strings to values *[(see note 3)](#note-3-update-settings-keys)* |
 undo               |                                         |
 redo               |                                         |
 
@@ -76,17 +76,19 @@ The function `bind` and `unbind` uses this [key strings and modifiers](https://g
 
 ##### note 2: Event names
 
-see section [Events](#events)
+The function `listen` and `unlisten` uses this [Events](#events)
 
 
-##### note 3: Settings
+##### note 3: Update Settings Keys
 
-Key                  | Value type
----------------------|---------------------
-alert_should_animate | bool
-alert_default_delay  | double (seconds)
-box_font_name        | string
-box_font_size        | double (point size)
+The function `update_settings` uses a map this keys and values:
+
+Key                  | Value type          | Default Value
+---------------------|---------------------|----------------
+alert_should_animate | bool                | false
+alert_default_delay  | double (seconds)    | 1.0
+box_font_name        | string              | 'Lucida Grande' / 'LucidaGrande'
+box_font_size        | double (point size) | 24.0
 
 Multiple key/value pairs can be updated simultaneously.
 

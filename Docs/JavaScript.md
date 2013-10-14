@@ -14,11 +14,11 @@ bind("D", ["cmd", "shift"], function() {
 #### Run
 
 ```bash
-/Applications/Zephyros.app/Contents/MacOS/zephjs myscript.js
+./Zephyros.app/Contents/MacOS/zephjs myscript.js
 
 # or
 
-/Applications/Zephyros.app/Contents/MacOS/zephjs myscript.coffee
+./Zephyros.app/Contents/MacOS/zephjs myscript.coffee
 ```
 
 #### API
@@ -38,6 +38,8 @@ For your convenience, [underscore.js 1.4.4](http://underscorejs.org/) is pre-loa
 
 The function `bind()` and `unbind()` uses this [key strings and modifiers](https://github.com/sdegutis/zephyros/blob/master/Zephyros/SDKeyBindingTranslator.m#L148).
 
+The function `updateSettings` uses this [keys and values](Protocol.md#note-3-update-settings-keys).
+
 ```coffeescript
 property (API) api
 
@@ -56,18 +58,20 @@ property (API) api
 - (void) log(String str)                   # shows up in the log window
 - (void) alert(String str[, Number delay]) # shows in a fancy alert; optional delay is seconds
 
-- (void) bind(String key,              # case-insensitive single-character string; see link below
+- (void) bind(String key,              # case-insensitive single-character string; see note above
               Array<String> modifiers, # may contain any number of: "cmd", "ctrl", "alt", "shift"
               Function fn)             # javascript fn that takes no args; return val is ignored
 
-- (void) unbind(String key, Array<String> modifiers)
+- (void) unbind(String key, Array<String> modifiers) # see note above
 
 - (void) listen(String eventName, Function callback) # see Events section below
-- (void) unlisten(String eventName)
+- (void) unlisten(String eventName) # see Events section below
 
 - (void) chooseFrom(Array<String> list, String title, Number linesTall, Number charsWide, Function callback) # fn called with chosen idx or null if canceled
 
 - (void) reloadConfig()
+
+- (void) updateSettings(Hash s) # see note above 
 
 - (void) undo()
 - (void) redo()
@@ -206,11 +210,3 @@ property (Number) y
 'mouse_moved', callback args: (movement) ... see Protocol.md for details
 'modifiers_changed', callback args: (mods) ... see Protocol.md for details
 ```
-
-#### About retain/release
-
-Every resource object (window, screen, app) has two functions, retain() and release().
-
-- These methods must be used when you want to keep a refernce around longer than a single callback.
-- Retain increments the retain-count and release decrements it. When it reaches 0, it will be garbage-collected after 5 seconds.
-- When you first get a resource back, it starts with a retain-count of 0.

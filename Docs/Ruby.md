@@ -31,6 +31,8 @@ ruby path/to/my-script.rb
 
 The function `bind` and `unbind` uses this [key strings and modifiers](https://github.com/sdegutis/zephyros/blob/master/Zephyros/SDKeyBindingTranslator.m#L148).
 
+The function `update_settings` uses this [keys and values](Protocol.md#note-3-update-settings-keys).
+
 ```ruby
 class API
 
@@ -38,8 +40,8 @@ class API
 
     def reload_config; end
 
-    def bind(key, mods, &blk); end
-    def unbind(key, mods); end
+    def bind(key, mods, &blk); end # see note above
+    def unbind(key, mods); end     # see note above
 
     def log(str); end
     def alert(msg, duration=2); end
@@ -47,7 +49,7 @@ class API
     def show_box(str); end
     def hide_box; end
 
-    def update_settings(s); # hash with key 'alert_should_animate' (bool) and/or 'alert_default_delay' (number)
+    def update_settings(s); # hash - see note above
 
     def clipboard_contents; end
 

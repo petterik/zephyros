@@ -115,7 +115,7 @@ class Api(Proxy):
     def bind(self, key, mods, fn)  # see note below
     def unbind(self, key, mods)    # see note below
     def choose_from(self, lst, title, lines, chars, fn)
-    def update_settings(self, s) # dict with key 'alert_should_animate' (bool) and/or 'alert_default_delay' (number)
+    def update_settings(self, s) # dict - see note below
     def unlisten(self, event)
     def undo(self)
     def redo(self)
@@ -139,3 +139,5 @@ api = Api(0)
 ```
 
 The function `bind` and `unbind` uses this [key strings and modifiers](https://github.com/sdegutis/zephyros/blob/master/Zephyros/SDKeyBindingTranslator.m#L148).
+
+The function `update_settings` uses this [keys and values](Protocol.md#note-3-update-settings-keys).

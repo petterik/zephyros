@@ -1,6 +1,7 @@
-HEAD
+5.2
     - Adds undo/redo last window movement to all APIs
     - Adds settings for changing show_box's font
+    - More completely fixing the aforementioned race condition
 
 5.1.1
     - Fixed a not-so-theoretical race condition which

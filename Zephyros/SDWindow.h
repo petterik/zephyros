@@ -19,6 +19,7 @@
 + (NSArray*) allWindows;
 + (NSArray*) visibleWindows;
 + (SDWindow*) focusedWindow;
++ (NSArray*) visibleWindowsMostRecentFirst;
 - (NSArray*) otherWindowsOnSameScreen;
 - (NSArray*) otherWindowsOnAllScreens;
 

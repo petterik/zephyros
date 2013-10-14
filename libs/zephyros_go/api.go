@@ -28,19 +28,19 @@ func ChooseFrom(list []string, title string, linesTall int, charsWide int, fn fu
 // type (or no args) depending on the event type.
 //
 // Valid events and their callback arguments:
-//     'window_created' args: [win]
-//     'window_minimized' args: [win]
-//     'window_unminimized' args: [win]
-//     'window_moved' args: [win]
-//     'window_resized' args: [win]
-//     'focus_changed' args: [win]
-//     'app_launched' args: [app]
-//     'app_died' args: [app]
-//     'app_hidden' args: [app]
-//     'app_shown' args: [app]
-//     'screens_changed' args: []
-//     'mouse_moved' args: [mouseMovement] (see Protocol.md for details)
-//     'modifiers_changed' args: [mods] (see Protocol.md for details)
+//     'window_created'      args: [win]
+//     'window_minimized'    args: [win]
+//     'window_unminimized'  args: [win]
+//     'window_moved'        args: [win]
+//     'window_resized'      args: [win]
+//     'focus_changed'       args: [win]
+//     'app_launched'        args: [app]
+//     'app_died'            args: [app]
+//     'app_hidden'          args: [app]
+//     'app_shown'           args: [app]
+//     'screens_changed'     args: []
+//     'mouse_moved'         args: [mouseMovement] (see Protocol.md for details)
+//     'modifiers_changed'   args: [mods]          (see Protocol.md for details)
 func Listen(event string, fn interface{}) {
 	fnValue := reflect.ValueOf(fn)
 	fnType := fnValue.Type()
@@ -97,7 +97,13 @@ func Redo() {
 	send(0, nil, false, "redo")
 }
 
-// Value keys are "alert_should_animate" (bool) and/or "alert_default_delay" (number)
+// Value keys are:
+//     Key 	               | Value type
+//     ------------------------+----------------------
+//     alert_should_animate    | bool
+//     alert_default_delay     | double (seconds)
+//     box_font_name           | string
+//     box_font_size           | double (point size)
 func UpdateSettings(msg map[string]interface{}) {
 	send(0, nil, false, "update_settings", msg)
 }

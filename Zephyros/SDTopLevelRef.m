@@ -225,6 +225,10 @@
     return MAP([SDWindow visibleWindows], [self.client store: [SDWindowRef withResource: obj]]);
 }
 
+- (id) visible_windows_most_recent_first:(NSArray*)args msgID:(id)msgID {
+    return MAP([SDWindow visibleWindowsMostRecentFirst], [self.client store: [SDWindowRef withResource: obj]]);
+}
+
 - (id) all_windows:(NSArray*)args msgID:(id)msgID {
     return MAP([SDWindow allWindows], [self.client store: [SDWindowRef withResource: obj]]);
 }

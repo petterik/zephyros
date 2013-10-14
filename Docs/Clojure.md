@@ -40,11 +40,13 @@ lein exec path/to/my-zeph.clj
 
 The function `bind` and `unbind` uses this [key strings and modifiers](https://github.com/sdegutis/zephyros/blob/master/Zephyros/SDKeyBindingTranslator.m#L148).
 
+The function `update-settings` uses this [keys and values](Protocol.md#note-3-update-settings-keys).
+
 ```clojure
 ;; top level
 
-(defn bind [key mods f])
-(defn unbind [key mods])
+(defn bind [key mods f]) ;; see note above
+(defn unbind [key mods]) ;; see note above
 
 (defn listen [event f])
 (defn unlisten [event])
@@ -68,7 +70,7 @@ The function `bind` and `unbind` uses this [key strings and modifiers](https://g
 (defn get-visible-windows [])
 (defn get-all-windows [])
 
-(defn update-settings [s]) ;; map, with :alert_should_animate (bool) and/or :alert_default_delay (number)
+(defn update-settings [s]) ;; map - see note above
 
 (defn get-main-screen [])
 (defn get-all-screens [])
