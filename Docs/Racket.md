@@ -2,7 +2,9 @@
 
 #### Setup
 
-* (require "path/to/zephyros.rkt")
+```racket
+   (require "path/to/zephyros.rkt")
+```
 
 The routines are almost consistent with the Zephyros names - underscores are replaced with hyphens so the routines look scheme-like.
 
@@ -116,4 +118,3 @@ There's an unlistener corresponding to every listener:
    (unlisten-window-unminiized)
 
 ```
-
