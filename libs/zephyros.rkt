@@ -72,58 +72,49 @@
     (string-replace str "_" "-"))))
 
 (define-syntax (protocol->response-function stx)
-  (syntax-case stx ()
-    ;; no args and no receiver routines
-    [(_ str)
-     (with-syntax ([fn-name (datum->syntax
+  (with-syntax ([fn-name (datum->syntax
                              stx
-                             (get-fn-name (syntax->datum #'str)))])
-       
-       #'(define (fn-name)
-           (send-message str)))]
+                             (get-fn-name
+                              (cadr
+                               (syntax->datum stx))))])
+   (syntax-case stx ()
+     ;; no args and no receiver routines
+     [(_ str)     
+      #'(define (fn-name)
+          (send-message str))]
 
-    ;; no receiver but routine has args
-    [(_ str (args ...))
-     (with-syntax ([fn-name (datum->syntax
-                             stx
-                             (get-fn-name (syntax->datum #'str)))])
-       #'(define (fn-name args ...)
-           (send-message str 'null (list args ...))))]
+     ;; no receiver but routine has args
+     [(_ str (args ...))
+      #'(define (fn-name args ...)
+          (send-message str 'null (list args ...)))]
 
-    ;; receiver and args exist
-    [(_ str receiver (args ...))
-     (with-syntax ([fn-name (datum->syntax
-                             stx
-                             (get-fn-name (syntax->datum #'str)))])
-       #'(define (fn-name receiver args ...)
-           (send-message str receiver (list args ...))))]))
+     ;; receiver and args exist
+     [(_ str receiver (args ...))
+      #'(define (fn-name receiver args ...)
+          (send-message str receiver (list args ...)))])))
 
 (define-syntax (protocol->no-response-function stx)
-  (syntax-case stx ()
-    ;; no args and no receiver routines
-    [(_ str)
-     (with-syntax ([fn-name (datum->syntax
-                             stx
-                             (get-fn-name (syntax->datum #'str)))])
-       
-       #'(define (fn-name)
-           (send-message-no-response str)))]
+  (with-syntax ([fn-name (datum->syntax
+                          stx
+                          (get-fn-name
+                           (syntax->datum
+                            (cadr
+                             (syntax->list stx)))))])
+   (syntax-case stx ()
+     ;; no args and no receiver routines
+     [(_ str)
+      #'(define (fn-name)
+          (send-message-no-response str))]
     
-    ;; no receiver but routine has args
-    [(_ str (args ...))
-     (with-syntax ([fn-name (datum->syntax
-                             stx
-                             (get-fn-name (syntax->datum #'str)))])
-       #'(define (fn-name args ...)
-           (send-message-no-response str 'null (list args ...))))]
+     ;; no receiver but routine has args
+     [(_ str (args ...))
+      #'(define (fn-name args ...)
+          (send-message-no-response str 'null (list args ...)))]
 
-    ;; receiver and args exist
-    [(_ str receiver (args ...))
-     (with-syntax ([fn-name (datum->syntax
-                             stx
-                             (get-fn-name (syntax->datum #'str)))])
-       #'(define (fn-name receiver args ...)
-           (send-message-no-response str receiver (list args ...))))]))
+     ;; receiver and args exist
+     [(_ str receiver (args ...))
+      #'(define (fn-name receiver args ...)
+          (send-message-no-response str receiver (list args ...)))])))
 
 (define (poll-for-message msg-id f)
   (define last-value '*)
