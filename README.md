@@ -1,4 +1,4 @@
-**OS X Mavericks fix**
+## *OS X Mavericks fix*
 
 1. Quit Zephyros
 2. Open System Preferences -> Security & Privacy -> Privacy tab -> Accessibility tab
