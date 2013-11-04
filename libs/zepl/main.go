@@ -6,20 +6,12 @@ import (
   "io"
   "net"
   "bufio"
-  "strings"
-  "strconv"
 )
 
 func ListenForResponses(conn net.Conn, incoming chan string) {
   reader := bufio.NewReader(conn)
   for {
-    numBytes, _ := reader.ReadString('\n')
-    numBytes = strings.Trim(numBytes, "\n")
-    i, _ := strconv.ParseUint(numBytes, 10, 64)
-
-    buf := make([]byte, i)
-    io.ReadFull(reader, buf)
-
+    buf, _ := reader.ReadString('\n')
     incoming <- string(buf)
   }
 }
@@ -57,7 +49,7 @@ func main() {
       if request == "exit" {
         break MainLoop
       }
-      fmt.Fprintf(conn, "%v\n%v", len(request), request)
+      fmt.Fprintf(conn, "%v", request)
       firstResponse := <- incoming
       fmt.Printf("<- %v\n", firstResponse)
     case asyncResponse := <- incoming:
