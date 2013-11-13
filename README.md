@@ -12,7 +12,7 @@ So I'm forking Zephyros, as a new app called
 Phoenix will have the same API as Zephyros. But instead of scripting
 over TCP, it will embed a single, lightweight scripting language.
 
-For that role, I've written a new language called
+For that role, I'm writing a new language called
 [Beowulf](https://github.com/sdegutis/beowulf). It's a lightweight
 Clojure written in pure Objective-C.
 
