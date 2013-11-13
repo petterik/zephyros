@@ -98,6 +98,7 @@ You typically write a script that binds global hot keys to do stuff, like moving
 - To [danielepolencic](https://github.com/danielepolencic/), for the new menu bar icon
 - To [jdiehl](https://github.com/jdiehl/), for [his unix-sockets version of CocoaAsyncSocket](https://github.com/jdiehl/CocoaAsyncSocket/tree/socketUN)
 - To [richo](https://github.com/richo/), for the Chicken Scheme API
+- To [colindean](https://github.com/colindean/), for making it smoother to upgrade to Mavericks
 - To everyone. You're great!
 
 ### License
