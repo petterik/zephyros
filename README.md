@@ -38,7 +38,7 @@ requests for new language adapters.
 *The OS X window manager for hackers*
 
 * Current version: **5.2**
-* Requires: OS X 10.7 and up
+* Requires: OS X 10.9 and up
 * Download: get [.zip file](https://raw.github.com/sdegutis/zephyros/master/Builds/Zephyros-LATEST.app.tar.gz), unzip, right-click app, choose "Open"
 
 #### Basics
