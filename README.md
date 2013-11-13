@@ -1,11 +1,3 @@
-## *OS X Mavericks fix*
-
-1. Quit Zephyros
-2. Open System Preferences -> Security & Privacy -> Privacy tab -> Accessibility tab
-3. Click the "Unlock" icon at the bottom of the window
-4. Click the checkbox for Zephyros
-5. Open Zephyros
-
 # Zephyros
 
 > As Odysseus climbed onto the shore, he opened up his MBP and began to write an email to a mailing list about how terrible his adventure had been, and how he'd almost been drowned by the sea, and how beautiful yet deadly was the sound of the Sirens.
