@@ -71,6 +71,7 @@ You typically write a script that binds global hot keys to do stuff, like moving
 - [Using CoffeeScript](Docs/CoffeeScript.md)
 - [Using Node.js](https://github.com/danielepolencic/node-zephyros)
 - [Using CHICKEN Scheme](Docs/Scheme.md)
+- [Using Racket](Docs/Racket.md)
 
 **Note:** all the languages use the same simple [underlying protocol](Docs/Protocol.md).
 
