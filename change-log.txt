@@ -1,3 +1,18 @@
+NOTICE:
+
+Read about the future of Zephyros:
+
+  - https://github.com/sdegutis/zephyros
+  - (it's at the top of the readme)
+
+===========================================
+
+5.3
+    - Adds Racket API
+    - Makes upgrading to OS X 10.9 smoother
+    - Fixes a few odd crashies
+    - Fixes `zepl` tool
+
 5.2
     - Adds undo/redo last window movement to all APIs
     - Adds settings for changing show_box's font

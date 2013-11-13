@@ -1,3 +1,27 @@
+## About the future of Zephyros
+
+Zephyros was a really fun project. I learned a lot, met really cool
+people, and we made a super-flexible window manager together.
+
+But Zephyros is overkill. The "any language" philosophy made for a fun
+toy, but at the cost of simplicity and efficiency.
+
+So I'm forking Zephyros, as a new app called
+[Phoenix](https://github.com/sdegutis/phoenix).
+
+Phoenix will have the same API as Zephyros. But instead of scripting
+over TCP, it will embed a single, lightweight scripting language.
+
+For that role, I've written a new language called
+[Beowulf](https://github.com/sdegutis/beowulf). It's a lightweight
+Clojure written in pure Objective-C.
+
+All new development will focus on Phoenix and Beowulf. At this moment,
+they're still in alpha. Hackers are invited to join the effort.
+
+No new features will be added to Zephyros, but it will accept pull
+requests for new language adapters.
+
 # Zephyros
 
 > As Odysseus climbed onto the shore, he opened up his MBP and began to write an email to a mailing list about how terrible his adventure had been, and how he'd almost been drowned by the sea, and how beautiful yet deadly was the sound of the Sirens.
