@@ -22,6 +22,9 @@ they're still in alpha. Hackers are invited to join the effort.
 No new features will be added to Zephyros, but it will accept pull
 requests for new language adapters.
 
+## Install
+* Download: get [.zip file](https://raw.github.com/sdegutis/zephyros/master/Builds/Zephyros-LATEST.app.tar.gz), unzip, right-click app, choose "Open"
+
 # Zephyros
 
 > As Odysseus climbed onto the shore, he opened up his MBP and began to write an email to a mailing list about how terrible his adventure had been, and how he'd almost been drowned by the sea, and how beautiful yet deadly was the sound of the Sirens.
@@ -39,7 +42,6 @@ requests for new language adapters.
 
 * Current version: **5.2**
 * Requires: OS X 10.9 and up
-* Download: get [.zip file](https://raw.github.com/sdegutis/zephyros/master/Builds/Zephyros-LATEST.app.tar.gz), unzip, right-click app, choose "Open"
 
 #### Basics
 
